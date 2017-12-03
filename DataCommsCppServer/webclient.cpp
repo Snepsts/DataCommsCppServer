@@ -12,6 +12,7 @@ linker->additional include library: Ws2_32.lib
 
 Copyright 2008 by Ziping Liu
 Updated on 2011 by Ziping Liu
+Updated on 2017 by Michael Ranciglio
 Prepared for CS480, Southeast Missouri State University
 
 ******************************************************************************/
@@ -49,8 +50,7 @@ int main(int argc, char *argv[])
 	int bufcnt;                         /* no. of chars in buffer */
 
 	if (argc < 3 || argc > 4) {
-		fprintf(stderr, "%s%s%s", "usage: ", argv[0],
-			" <compname> <path> [appnum]\n");
+		fprintf(stderr, "%s%s%s", "usage: ", argv[0], " <compname> <path> [appnum]\n");
 		exit(1);
 	}
 
@@ -71,14 +71,13 @@ int main(int argc, char *argv[])
 	is a character or a numeric number */
 	if (isalpha(*argv[1])) {   /* server address is a name */
 		hp = gethostbyname(argv[1]);
-	}
-	else { /* Convert nnn.nnn address to a usable one */
+	} else { /* Convert nnn.nnn address to a usable one */
 		addr = inet_addr(argv[1]);
 		hp = gethostbyaddr((char *)&addr, 4, AF_INET);
 	}
+
 	if (hp == NULL) {
-		fprintf(stderr, "Client: Cannot resolve address [%s]: Error %d\n",
-			argv[1], WSAGetLastError());
+		fprintf(stderr, "Client: Cannot resolve address [%s]: Error %d\n", argv[1], WSAGetLastError());
 		WSACleanup();
 		exit(1);
 	}
@@ -97,8 +96,7 @@ int main(int argc, char *argv[])
 	/*-----------------------------------------------------------------------*/
 	conn_socket = socket(AF_INET, socket_type, 0);
 	if (conn_socket <0) {
-		fprintf(stderr, "Client: Error Opening socket: Error %d\n",
-			WSAGetLastError());
+		fprintf(stderr, "Client: Error Opening socket: Error %d\n", WSAGetLastError());
 		WSACleanup();
 		return -1;
 	}
@@ -107,8 +105,7 @@ int main(int argc, char *argv[])
 	/*          Connect and bind the socket                                 */
 	/*----------------------------------------------------------------------*/
 	printf("Client connecting to: %s\n", hp->h_name);
-	if (connect(conn_socket, (struct sockaddr*)&server, sizeof(server))
-		== SOCKET_ERROR) {
+	if (connect(conn_socket, (struct sockaddr*)&server, sizeof(server)) == SOCKET_ERROR) {
 		fprintf(stderr, "connect() failed: %d\n", WSAGetLastError());
 		WSACleanup();
 		return -1;
