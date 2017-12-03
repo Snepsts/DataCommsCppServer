@@ -25,6 +25,12 @@ Prepared for CS480, Southeast Missouri State University
 *          or an IP address, like 150.168.0.1
 *-----------------------------------------------------------------------
 */
+
+#define _WINSOCK_DEPRECATED_NO_WARNINGS 1 //make it build with gethostbyname and the other IPV6 support-less functions
+#define _CRT_SECURE_NO_WARNINGS 1 //make it build with sprintf
+
+#pragma comment(lib, "Ws2_32.lib") //link to Win32 WindowSocket2 libraries
+
 #include <winsock2.h>
 #include <stdlib.h>
 #include <stdio.h>
