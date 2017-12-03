@@ -12,6 +12,7 @@ linker->additional include library: Ws2_32.lib
 
 Copyright 2008 by Ziping Liu
 Updated on 2011 by Ziping Liu
+Updated on 2017 by Michael Ranciglio
 Prepared for CS480, Southeast Missouri State University
 
 ******************************************************************************/
@@ -31,20 +32,15 @@ Prepared for CS480, Southeast Missouri State University
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#define BUFFSIZE	256
-#define MAX_PATH	100
+#define BUFFSIZE    256
+#define MAX_PATH    100
 #define SERVER_NAME	"CS480 Demo Web Server"
 
-#define ERROR_400	"<head></head><body><html><h1>Error 400</h1><p>Th\
-e server couldn't understand your request.</html></body>\n"
+#define ERROR_400	"<head></head><body><html><h1>Error 400</h1><p>The server couldn't understand your request.</html></body>\n"
 
-#define ERROR_404	"<head></head><body><html><h1>Error 404</h1><p>Do\
-cument not found.</html></body>\n"
+#define ERROR_404	"<head></head><body><html><h1>Error 404</h1><p>Document not found.</html></body>\n"
 
-#define HOME_PAGE	"<head></head><body><html><h1>Welcome to the CS480\
- Demo Server</h1><p>Why not visit: <ul><li><a href=\"http://www2.semo.edu/csdept/\">\
-Computer Science Home Page</a><li><a href=\"http://cstl-csm.semo.edu/liu/cs480_fall2012/index.htm\"\
->CS480 Home Page<a></ul></html></body>\n"
+#define HOME_PAGE	"<head></head><body><html><h1>Welcome to the CS480 Demo Server</h1><p>Why not visit: <ul><li><a href=\"http://www2.semo.edu/csdept/\"> Computer Science Home Page</a><li><a href=\"http://cstl-csm.semo.edu/liu/cs480_fall2012/index.htm\" >CS480 Home Page<a></ul></html></body>\n"
 
 #define DEFAULT_PROTO SOCK_STREAM
 
@@ -53,7 +49,7 @@ int recvln(SOCKET conn, char *buff, int buffsz);
 
 int main(int argc, char *argv[])
 {
-	int	 n;
+	int	n;
 	char cmd[16], path[MAX_PATH], vers[16], dirSpec[MAX_PATH];
 	char Buffer[256];					/* hold data received from client */
 	int bufcnt;							/* count the number of characters received from client */
@@ -104,8 +100,7 @@ int main(int argc, char *argv[])
 	/* bind() associates a local address and port combination with the socket created */
 	/*----------------------------------------------------------------------*/
 
-	if (bind(listen_socket, (struct sockaddr*)&local, sizeof(local))
-		== SOCKET_ERROR) {
+	if (bind(listen_socket, (struct sockaddr*)&local, sizeof(local)) == SOCKET_ERROR) {
 		fprintf(stderr, "bind() failed with error %d\n", WSAGetLastError());
 		WSACleanup();
 		return -1;
@@ -139,9 +134,7 @@ int main(int argc, char *argv[])
 			WSACleanup();
 			return -1;
 		}
-		printf("accepted connection from %s, port %d\n",
-			inet_ntoa(from.sin_addr),
-			htons(from.sin_port));
+		printf("accepted connection from %s, port %d\n", inet_ntoa(from.sin_addr), htons(from.sin_port));
 
 		/*---------------------------------------------------------------------*/
 		/* Read from socket and write to stdout, echo received data back to socket */
@@ -156,6 +149,7 @@ int main(int argc, char *argv[])
 			closesocket(msgsock);
 			break;
 		}
+
 		if (retval == 0) {
 			printf("Client closed connection\n");
 			closesocket(msgsock);
@@ -192,8 +186,7 @@ int main(int argc, char *argv[])
 		if (strcmp(path, "/") == 0) {
 			send_head(msgsock, 200, strlen(HOME_PAGE));
 			send(msgsock, HOME_PAGE, strlen(HOME_PAGE), 0);
-		}
-		else { /* not found */
+		} else { /* not found */
 			send_head(msgsock, 404, strlen(ERROR_404));
 			send(msgsock, ERROR_404, strlen(ERROR_404), 0);
 		}
@@ -201,9 +194,7 @@ int main(int argc, char *argv[])
 		/*---------------------------------------------------------------------*/
 		/* Terminate connection with the requested client                      */
 		/*---------------------------------------------------------------------*/
-		printf("Terminating connection with %s, port %d\n",
-			inet_ntoa(from.sin_addr),
-			htons(from.sin_port));
+		printf("Terminating connection with %s, port %d\n", inet_ntoa(from.sin_addr), htons(from.sin_port));
 		closesocket(msgsock);
 
 		/* server continue listening on the listen socket */
@@ -269,8 +260,7 @@ int recvln(SOCKET conn, char *buff, int buffsz)
 	char	*bp = buff, c;
 	int	n;
 
-	while (bp - buff < buffsz &&
-		(n = recv(conn, bp, 1, 0)) > 0) {
+	while (bp - buff < buffsz && (n = recv(conn, bp, 1, 0)) > 0) {
 		if (*bp++ == '\n')
 			return (bp - buff);
 	}
